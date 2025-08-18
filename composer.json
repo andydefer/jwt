@@ -26,10 +26,11 @@
         "auth"
     ],
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "name": "andydefer/jwt",
     "prefer-stable": true,
     "require": {
+        "illuminate/routing": "^10.0|^11.0",
         "php": "^8.1",
         "ramsey/uuid": "^4.0",
         "tymon/jwt-auth": "^2.0"

@@ -7,49 +7,41 @@ use Illuminate\Support\ServiceProvider;
 
 class JwtAuthServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
     public function register(): void
     {
-        // Fusionne la configuration du package avec celle de l'application
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/jwt-auth.php',
-            'jwt-auth'
-        );
+        // Charge la configuration seulement si le fichier existe
+        if (file_exists(__DIR__ . '/../config/jwt-auth.php')) {
+            $this->mergeConfigFrom(
+                __DIR__ . '/../config/jwt-auth.php',
+                'jwt-auth'
+            );
+        }
     }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
     public function boot(): void
     {
+        // Publie la configuration
+        $this->publishes([
+            __DIR__ . '/../config/jwt-auth.php' => config_path('jwt-auth.php'),
+        ], 'config');
+
+        if ($this->app->runningInConsole()) {
+            $this->publishMigrations();
+        }
+
         $this->registerRoutes();
-        $this->registerMigrations();
         $this->registerMiddleware();
     }
 
-    /**
-     * Enregistre les routes du package
-     *
-     * @return void
-     */
     protected function registerRoutes(): void
     {
-        Route::group($this->routeConfiguration(), function () {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
-        });
+        if (file_exists(__DIR__ . '/../routes/api.php')) {
+            Route::group($this->routeConfiguration(), function () {
+                $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+            });
+        }
     }
 
-    /**
-     * Configure les routes
-     *
-     * @return array
-     */
     protected function routeConfiguration(): array
     {
         return [
@@ -58,25 +50,20 @@ class JwtAuthServiceProvider extends ServiceProvider
         ];
     }
 
-    /**
-     * Enregistre les migrations du package
-     *
-     * @return void
-     */
-    protected function registerMigrations(): void
+    protected function publishMigrations(): void
     {
-        if ($this->app->runningInConsole()) {
-            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $migrationsPath = __DIR__ . '/../database/migrations/';
+        if (is_dir($migrationsPath)) {
+            $this->publishes([
+                $migrationsPath => database_path('migrations'),
+            ], 'migrations');
         }
     }
 
-    /**
-     * Enregistre le middleware du package
-     *
-     * @return void
-     */
     protected function registerMiddleware(): void
     {
-        $this->app['router']->aliasMiddleware('jwt.auth', Middleware\JwtAuthMiddleware::class);
+        if (class_exists(Middleware\JwtAuthMiddleware::class)) {
+            $this->app['router']->aliasMiddleware('jwt.auth', Middleware\JwtAuthMiddleware::class);
+        }
     }
 }

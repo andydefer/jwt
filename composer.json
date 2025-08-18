@@ -2,16 +2,13 @@
     "authors": [
         {
             "email": "andykanidimbu@gmail.com",
-            "name": "andydefer"
+            "name": "Andy Defer"
         }
     ],
     "autoload": {
         "psr-4": {
             "AndyDefer\\Jwt\\": "src/"
         }
-    },
-    "config": {
-        "sort-packages": true
     },
     "description": "A JWT authentication package for Laravel with support for multi-device login.",
     "extra": {
@@ -29,8 +26,9 @@
         "auth"
     ],
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "name": "andydefer/jwt",
+    "prefer-stable": true,
     "require": {
         "php": "^8.1",
         "ramsey/uuid": "^4.0",

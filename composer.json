@@ -1,0 +1,42 @@
+{
+    "authors": [
+        {
+            "email": "andykanidimbu@gmail.com",
+            "name": "andydefer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AndyDefer\\Jwt\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "description": "A JWT authentication package for Laravel with support for multi-device login.",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AndyDefer\\Jwt\\JwtAuthServiceProvider"
+            ]
+        }
+    },
+    "keywords": [
+        "laravel",
+        "jwt",
+        "authentication",
+        "api",
+        "auth"
+    ],
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "name": "andydefer/jwt",
+    "require": {
+        "php": "^8.1",
+        "illuminate/routing": "12.x-dev",
+        "illuminate/support": "12.x-dev",
+        "ramsey/uuid": "^4.0",
+        "tymon/jwt-auth": "^2.0"
+    },
+    "type": "library"
+}

@@ -9,13 +9,13 @@ class JwtAuthServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Charge la configuration seulement si le fichier existe
+        /*  // Charge la configuration seulement si le fichier existe
         if (file_exists(__DIR__ . '/../config/jwt-auth.php')) {
             $this->mergeConfigFrom(
                 __DIR__ . '/../config/jwt-auth.php',
                 'jwt-auth'
             );
-        }
+        } */
     }
 
     public function boot(): void

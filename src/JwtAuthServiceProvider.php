@@ -9,21 +9,23 @@ class JwtAuthServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        /*  // Charge la configuration seulement si le fichier existe
-        if (file_exists(__DIR__ . '/../config/jwt-auth.php')) {
-            $this->mergeConfigFrom(
-                __DIR__ . '/../config/jwt-auth.php',
-                'jwt-auth'
-            );
-        } */
+        $configPath = __DIR__ . '/../config/jwt-auth.php';
+
+        if (file_exists($configPath)) {
+            $this->mergeConfigFrom($configPath, 'jwt-auth');
+        }
     }
 
     public function boot(): void
     {
-        // Publie la configuration
-        $this->publishes([
-            __DIR__ . '/../config/jwt-auth.php' => config_path('jwt-auth.php'),
-        ], 'config');
+        $configPath = __DIR__ . '/../config/jwt-auth.php';
+
+        // Publie la configuration seulement si le fichier existe
+        if (file_exists($configPath)) {
+            $this->publishes([
+                $configPath => config_path('jwt-auth.php'),
+            ], 'config');
+        }
 
         if ($this->app->runningInConsole()) {
             $this->publishMigrations();
@@ -32,6 +34,7 @@ class JwtAuthServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerMiddleware();
     }
+
 
     protected function registerRoutes(): void
     {

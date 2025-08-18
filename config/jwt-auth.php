@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'secret' => env('JWT_SECRET'),
-    'ttl' => 3600,
-    'refresh_ttl' => 20160,
-    'algo' => 'HS256',
+    // Clé secrète par défaut
+    'secret' => env('JWT_SECRET', 'change_this_secret'),
+
+    // Durée de vie du token (en minutes)
+    'ttl' => env('JWT_TTL', 60),
 ];

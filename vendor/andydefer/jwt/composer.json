@@ -1,0 +1,33 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Andydefer\\JwtAuth\\": "src/"
+        }
+    },
+    "description": "Lightweight JWT Auth package for Laravel",
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "JwtAuth": "Andydefer\\JwtAuth\\Facades\\JwtAuth"
+            },
+            "providers": [
+                "Andydefer\\JwtAuth\\JwtAuthServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "name": "andydefer/jwt-auth",
+    "version": "2.1.0",
+    "prefer-stable": true,
+    "require": {
+        "laravel/framework": "^12.0",
+        "php": "^8.1",
+        "tymon/jwt-auth": "^2.0"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan package:discover --ansi || true"
+        ]
+    },
+    "type": "library"
+}

@@ -3,7 +3,7 @@
         'name' => 'andydefer/jwt-auth',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '7ec2feda22153a2ae61d2fa20eb087d1dfc599ef',
+        'reference' => '412240dfbf71e3cda2a1cd62e0a012ea001ae0a2',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'andydefer/jwt-auth' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '7ec2feda22153a2ae61d2fa20eb087d1dfc599ef',
+            'reference' => '412240dfbf71e3cda2a1cd62e0a012ea001ae0a2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

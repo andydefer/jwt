@@ -1,110 +1,362 @@
-# `andydefer/jwt`
+# 🔐 Laravel Simple JWT Auth - Documentation Française
 
-Un package d'authentification JWT pour Laravel, conçu pour gérer l'authentification sans session et le déploiement sur plusieurs appareils. Il s'intègre parfaitement avec des applications **React/Inertia.js** et le package front-end [`andydefer-jwt`](https://www.google.com/search?q=%5Bhttps://www.npmjs.com/package/andydefer-jwt%5D\(https://www.npmjs.com/package/andydefer-jwt\)).
+## 📖 Table des Matières
+1. [Introduction](#-introduction)
+2. [Fonctionnalités](#-fonctionnalités)
+3. [Installation](#-installation)
+4. [Configuration](#-configuration)
+5. [Utilisation](#-utilisation)
+6. [Endpoints API](#-endpoints-api)
+7. [Sécurité](#-sécurité)
+8. [Dépannage](#-dépannage)
 
-## Table des matières
+## 🌟 Introduction
 
-  - [Installation](https://www.google.com/search?q=%23installation)
-  - [Configuration](https://www.google.com/search?q=%23configuration)
-  - [Utilisation](https://www.google.com/search?q=%23utilisation)
-  - [Intégration Front-end](https://www.google.com/search?q=%23int%C3%A9gration-front-end)
+**Laravel Simple JWT Auth** est un package complet et facile à utiliser pour l'authentification JWT dans Laravel. Il fournit un système d'authentification prêt à l'emploi avec gestion des tokens, support multi-appareils et une intégration transparente.
 
------
+## ✨ Fonctionnalités
 
-## Installation
+- **✅ Intégration Simple**: Système d'authentification JWT complet en une commande
+- **🚀 Endpoints Prêts à l'emploi**: Routes API pré-construites pour l'inscription, connexion, déconnexion, etc.
+- **🔄 Rafraîchissement de Tokens**: Gestion automatique du renouvellement des tokens
+- **🔒 Sécurité Renforcée**: Stockage sécurisé des tokens en base de données avec suivi des appareils
+- **🛡️ Middleware Dédié**: Protection des routes avec middleware JWT personnalisé
+- **🧩 Support des Modèles Personnalisés**: Compatible avec votre modèle User existant
 
-La méthode préférée pour installer ce package est d'utiliser [Composer](https://getcomposer.org/).
+## 📦 Installation
 
-1.  Ajoutez le package à votre projet Laravel :
-
-    ```bash
-    composer require andydefer/jwt
-    ```
-
-2.  Ajoutez le middleware du package à votre fichier `app/Http/Kernel.php` pour le groupe de routes `api`.
-
-    ```php
-    protected $middlewareGroups = [
-        'api' => [
-            // ... autres middlewares
-            \AndyDefer\Jwt\Middleware\JwtAuthMiddleware::class,
-        ],
-    ];
-    ```
-
-    > **Note :** Le package enregistre automatiquement le middleware avec l'alias `jwt.auth`, mais cette étape garantit qu'il est appliqué à toutes vos routes d'API.
-
-3.  Lancez les migrations pour créer la table `jwt_auth` :
-
-    ```bash
-    php artisan migrate
-    ```
-
-4.  Publiez les routes du package. Elles seront ajoutées à votre fichier `routes/api.php`.
-
-    ```bash
-    php artisan vendor:publish --provider="AndyDefer\Jwt\JwtAuthServiceProvider" --tag="routes"
-    ```
-
------
-
-## Configuration
-
-Le package fonctionne de manière préconfigurée avec les routes d'API suivantes :
-
-  * `POST /jwt/register`
-  * `POST /jwt/login`
-  * `GET /jwt/token`
-  * `POST /jwt/logout`
-  * `POST /jwt/refresh`
-  * `GET /jwt/user`
-  * `POST /jwt/verify-signature`
-
-Vous pouvez personnaliser le préfixe de ces routes en modifiant le Service Provider.
-
------
-
-## Utilisation
-
-Le package gère l'ensemble du flux d'authentification JWT pour votre backend, y compris la génération de paires de clés RSA pour les communications sécurisées entre les appareils.
-
-### Authentification
-
-Les utilisateurs peuvent s'authentifier via les endpoints suivants :
-
-  * **`POST /jwt/register`** : Enregistre un nouvel utilisateur et émet un token JWT.
-      * **Paramètres :** `name`, `email`, `password`, `password_confirmation`, `device_id` (optionnel)
-  * **`POST /jwt/login`** : Authentifie un utilisateur existant et émet un token JWT.
-      * **Paramètres :** `email`, `password`, `device_id` (optionnel)
-  * **`GET /jwt/token`** : Génère un token JWT pour un utilisateur déjà authentifié via la session Laravel (utile pour les premières requêtes depuis une application Inertia.js).
-
-### Gestion des tokens
-
-  * **`POST /jwt/logout`** : Invalide le token JWT actuel.
-  * **`POST /jwt/refresh`** : Invalide le token actuel et en émet un nouveau.
-  * **`GET /jwt/user`** : Récupère les informations de l'utilisateur authentifié.
-  * **`POST /jwt/verify-signature`** : Vérifie la signature d'une requête client pour des communications ultra-sécurisées.
-
------
-
-## Intégration Front-end avec React
-
-Ce package a été conçu pour être utilisé en tandem avec son homologue front-end, le package NPM [`andydefer-jwt`](https://www.google.com/search?q=%5Bhttps://www.npmjs.com/package/andydefer-jwt%5D\(https://www.npmjs.com/package/andydefer-jwt\)).
-
-Le package front-end utilise `axios` pour communiquer avec les endpoints d'API fournis par ce package Laravel, simplifiant la gestion de l'état d'authentification dans vos applications React/Inertia.js.
-
-### Exemple de Configuration `axios`
-
-Assurez-vous que votre application front-end est configurée pour pointer vers les endpoints de ce package :
-
-```javascript
-import axios from 'axios';
-
-// Remplacez par l'URL de votre application Laravel
-axios.defaults.baseURL = 'https://mon-domaine-laravel.com/jwt';
-axios.defaults.withCredentials = true;
+### Étape 1: Installation via Composer
+```bash
+composer require andydefer/jwt-auth
 ```
 
------
+### Étape 2: Publier la configuration
+```bash
+php artisan vendor:publish --tag=jwt-config
+```
 
-*Continuez à développer avec des outils d'authentification solides et fiables \!*
+### Étape 3: Exécuter les migrations
+```bash
+php artisan migrate
+```
+
+### Étape 4: Configurer le modèle User (Optionnel)
+
+Si vous utilisez un modèle User personnalisé, assurez-vous qu'il implémente `JWTSubject`:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class User extends Authenticatable implements JWTSubject
+{
+    // ...
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+}
+```
+
+## ⚙️ Configuration
+
+### Fichier de configuration (`config/jwt.php`)
+
+```php
+<?php
+
+return [
+    'secret' => env('JWT_SECRET'), // Clé secrète JWT
+    'ttl' => env('JWT_TTL', 60), // Durée de vie du token (minutes)
+    'refresh_ttl' => env('JWT_REFRESH_TTL', 20160), // Durée de rafraîchissement (minutes)
+];
+```
+
+### Variables d'environnement (.env)
+
+```env
+JWT_SECRET=votre_clé_secrète_très_longue_ici
+JWT_TTL=1440
+JWT_REFRESH_TTL=20160
+```
+
+## 🚀 Utilisation
+
+### Protection des Routes
+
+Utilisez le middleware `jwt.auth` pour protéger vos routes:
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::middleware('jwt.auth')->group(function () {
+    Route::get('/profile', 'ProfileController@show');
+    Route::get('/dashboard', 'DashboardController@index');
+    // Vos autres routes protégées...
+});
+```
+
+### Récupérer l'utilisateur authentifié
+
+Dans vos contrôleurs:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class ProfileController extends Controller
+{
+    public function show(Request $request)
+    {
+        $user = $request->jwt_user; // Utilisateur authentifié
+        $jwtAuth = $request->jwt_auth; // Informations du token
+
+        return response()->json([
+            'user' => $user,
+            'device' => $jwtAuth->device_id
+        ]);
+    }
+}
+```
+
+## 📡 Endpoints API
+
+### 🔹 Inscription (Register)
+
+**Endpoint:** `POST /jwt/register`
+
+**Body:**
+```json
+{
+    "name": "Jean Dupont",
+    "email": "jean@exemple.com",
+    "password": "motdepasse123",
+    "password_confirmation": "motdepasse123"
+}
+```
+
+**Réponse:**
+```json
+{
+    "user": {
+        "id": 1,
+        "name": "Jean Dupont",
+        "email": "jean@exemple.com",
+        "created_at": "2023-01-01T00:00:00.000000Z",
+        "updated_at": "2023-01-01T00:00:00.000000Z"
+    },
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+### 🔹 Connexion (Login)
+
+**Endpoint:** `POST /jwt/login`
+
+**Body:**
+```json
+{
+    "email": "jean@exemple.com",
+    "password": "motdepasse123"
+}
+```
+
+**Réponse:**
+```json
+{
+    "user": {
+        "id": 1,
+        "name": "Jean Dupont",
+        "email": "jean@exemple.com"
+    },
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+### 🔹 Récupérer l'utilisateur (User)
+
+**Endpoint:** `GET /jwt/user`
+
+**Headers:**
+```
+Authorization: Bearer votre_token_jwt_ici
+```
+
+**Réponse:**
+```json
+{
+    "user": {
+        "id": 1,
+        "name": "Jean Dupont",
+        "email": "jean@exemple.com"
+    }
+}
+```
+
+### 🔹 Déconnexion (Logout)
+
+**Endpoint:** `POST /jwt/logout`
+
+**Headers:**
+```
+Authorization: Bearer votre_token_jwt_ici
+```
+
+**Réponse:**
+```json
+{
+    "message": "Successfully logged out"
+}
+```
+
+### 🔹 Rafraîchir le Token (Refresh)
+
+**Endpoint:** `POST /jwt/refresh`
+
+**Headers:**
+```
+Authorization: Bearer votre_token_jwt_ici
+```
+
+**Réponse:**
+```json
+{
+    "token": "nouveau_token_jwt_ici"
+}
+```
+
+### 🔹 Récupérer le Token (Token)
+
+**Endpoint:** `GET /jwt/token`
+
+**Headers:**
+```
+Authorization: Bearer votre_token_jwt_ici
+```
+
+**Réponse:**
+```json
+{
+    "token": "votre_token_jwt_ici"
+}
+```
+
+## 🔒 Sécurité
+
+### Gestion des Tokens
+
+Le package enregistre chaque token JWT dans la table `jwt_auth` avec:
+- ✅ User ID associé
+- ✅ Token JWT (hashé)
+- ✅ Identifiant d'appareil
+- ✅ Adresse IP
+- ✅ User Agent
+- ✅ Date d'émission
+- ✅ Dernière utilisation
+
+### Invalidation des Tokens
+
+Les tokens peuvent être invalidés individuellement via:
+```php
+use Andydefer\JwtAuth\Facades\JwtAuth;
+
+// Invalider un token spécifique
+JwtAuth::invalidateToken($token);
+```
+
+## 🛠️ Dépannage
+
+### Problème: "Token not provided"
+**Solution:** Vérifiez que le header Authorization est correctement formaté:
+```
+Authorization: Bearer votre_token_ici
+```
+
+### Problème: "Token has expired"
+**Solution:** Utilisez l'endpoint `/jwt/refresh` pour obtenir un nouveau token.
+
+### Problème: "User not found"
+**Solution:** Vérifiez que votre modèle User implémente correctement `JWTSubject`.
+
+### Problème: Clé JWT non générée
+**Solution:** Exécutez la commande:
+```bash
+php artisan config:clear
+```
+
+## 📋 Exemple Complet
+
+### Controller Protégé
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class ApiController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('jwt.auth');
+    }
+
+    public function getData(Request $request)
+    {
+        $user = $request->jwt_user;
+
+        return response()->json([
+            'data' => 'Données sensibles',
+            'user' => $user->only('id', 'name', 'email')
+        ]);
+    }
+}
+```
+
+### Routes API
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::prefix('api')->group(function () {
+    // Routes publiques
+    Route::post('register', 'AuthController@register');
+    Route::post('login', 'AuthController@login');
+
+    // Routes protégées
+    Route::middleware('jwt.auth')->group(function () {
+        Route::get('profile', 'ProfileController@show');
+        Route::get('data', 'ApiController@getData');
+        Route::post('logout', 'AuthController@logout');
+        Route::post('refresh', 'AuthController@refresh');
+    });
+});
+```
+
+## 📞 Support
+
+Pour toute question ou problème, consultez la documentation officielle de [tymon/jwt-auth](https://github.com/tymondesigns/jwt-auth) ou créez une issue sur le repository du package.
+
+## 📄 Licence
+
+Ce package est open-source et disponible sous la licence MIT.
+
+---
+
+**Note:** Cette documentation est basée sur la version actuelle du package. Consultez le repository officiel pour les mises à jour et changements récents.

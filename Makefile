@@ -9,7 +9,7 @@ NC=\033[0m
 
 # Variables
 PACKAGE_NAME=andydefer/jwt-auth
-CURRENT_VERSION=$(shell grep -oP '"version": "\K[^"]+' composer.json 2>/dev/null || echo "1.0.0")
+CURRENT_VERSION=$(shell grep -oP '"version":\s*"\K[0-9]+\.[0-9]+\.[0-9]+' composer.json 2>/dev/null || echo "0.0.0")
 BRANCH=master
 
 help: ## Affiche ce help.
@@ -35,15 +35,15 @@ update: ## Ajoute tous les changements, commit et push.
 	git push origin $(BRANCH)
 
 patch: ## Release patch version (x.x.1).
-	@$(eval NEW_VERSION=$(shell echo $(CURRENT_VERSION) | awk -F. '{$$3 = $$3 + 1; OFS="."; print $$0}'))
+	@$(eval NEW_VERSION=$(shell echo $(CURRENT_VERSION) | awk -F. '{$$3 = $$3 + 1; OFS="."; print $$1,$$2,$$3}'))
 	@make release VERSION=$(NEW_VERSION)
 
 minor: ## Release minor version (x.1.0).
-	@$(eval NEW_VERSION=$(shell echo $(CURRENT_VERSION) | awk -F. '{$$2 = $$2 + 1; $$3 = 0; OFS="."; print $$0}'))
+	@$(eval NEW_VERSION=$(shell echo $(CURRENT_VERSION) | awk -F. '{$$2 = $$2 + 1; $$3 = 0; OFS="."; print $$1,$$2,$$3}'))
 	@make release VERSION=$(NEW_VERSION)
 
 major: ## Release major version (1.0.0).
-	@$(eval NEW_VERSION=$(shell echo $(CURRENT_VERSION) | awk -F. '{$$1 = $$1 + 1; $$2 = 0; $$3 = 0; OFS="."; print $$0}'))
+	@$(eval NEW_VERSION=$(shell echo $(CURRENT_VERSION) | awk -F. '{$$1 = $$1 + 1; $$2 = 0; $$3 = 0; OFS="."; print $$1,$$2,$$3}'))
 	@make release VERSION=$(NEW_VERSION)
 
 push: ## Push vers le remote avec tags.
@@ -57,9 +57,14 @@ ifndef VERSION
 endif
 	@echo "$(YELLOW)Starting release process for version $(VERSION)...$(NC)"
 
-	# Update composer.json version
-	@echo "$(YELLOW)Updating version in composer.json...$(NC)"
-	@sed -i 's/"version": "[^"]*"/"version": "$(VERSION)"/' composer.json
+	# Vérifier si la version existe déjà dans composer.json
+	@if ! grep -q '"version":' composer.json; then \
+		echo "$(YELLOW)Adding version field to composer.json...$(NC)"; \
+		sed -i '/"name":/a\    "version": "$(VERSION)",' composer.json; \
+	else \
+		echo "$(YELLOW)Updating version in composer.json...$(NC)"; \
+		sed -i 's/"version": "[^"]*"/"version": "$(VERSION)"/' composer.json; \
+	fi
 
 	# Add all changes
 	@echo "$(YELLOW)Adding changes to git...$(NC)"
@@ -97,3 +102,13 @@ p: patch ## Alias pour patch.
 m: minor ## Alias pour minor.
 M: major ## Alias pour major.
 r: release ## Alias pour release.
+
+# Initialisation de la version si elle n'existe pas
+init-version: ## Initialise la version à 0.1.0 si elle n'existe pas.
+	@if ! grep -q '"version":' composer.json; then \
+		echo "$(YELLOW)Adding initial version to composer.json...$(NC)"; \
+		sed -i '/"name":/a\    "version": "0.1.0",' composer.json; \
+		echo "$(GREEN)Version initialized to 0.1.0$(NC)"; \
+	else \
+		echo "$(YELLOW)Version already exists: $(CURRENT_VERSION)$(NC)"; \
+	fi

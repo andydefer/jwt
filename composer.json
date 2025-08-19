@@ -17,7 +17,7 @@
     },
     "minimum-stability": "dev",
     "name": "andydefer/jwt-auth",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "prefer-stable": true,
     "require": {
         "laravel/framework": "^12.0",

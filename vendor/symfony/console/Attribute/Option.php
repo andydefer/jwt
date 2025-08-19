@@ -13,7 +13,6 @@ namespace Symfony\Component\Console\Attribute;
 
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\Suggestion;
-use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -76,7 +75,7 @@ class Option
             $self->name = (new UnicodeString($name))->kebab();
         }
 
-        $self->default = $parameter->getDefaultValue() instanceof \BackedEnum ? $parameter->getDefaultValue()->value : $parameter->getDefaultValue();
+        $self->default = $parameter->getDefaultValue();
         $self->allowNull = $parameter->allowsNull();
 
         if ($type instanceof \ReflectionUnionType) {
@@ -88,10 +87,9 @@ class Option
         }
 
         $self->typeName = $type->getName();
-        $isBackedEnum = is_subclass_of($self->typeName, \BackedEnum::class);
 
-        if (!\in_array($self->typeName, self::ALLOWED_TYPES, true) && !$isBackedEnum) {
-            throw new LogicException(\sprintf('The type "%s" on parameter "$%s" of "%s()" is not supported as a command option. Only "%s" types and BackedEnum are allowed.', $self->typeName, $name, $self->function, implode('", "', self::ALLOWED_TYPES)));
+        if (!\in_array($self->typeName, self::ALLOWED_TYPES, true)) {
+            throw new LogicException(\sprintf('The type "%s" on parameter "$%s" of "%s()" is not supported as a command option. Only "%s" types are allowed.', $self->typeName, $name, $self->function, implode('", "', self::ALLOWED_TYPES)));
         }
 
         if ('bool' === $self->typeName && $self->allowNull && \in_array($self->default, [true, false], true)) {
@@ -117,10 +115,6 @@ class Option
             $self->suggestedValues = [$instance, $self->suggestedValues[1]];
         }
 
-        if ($isBackedEnum && !$self->suggestedValues) {
-            $self->suggestedValues = array_column(($self->typeName)::cases(), 'value');
-        }
-
         return $self;
     }
 
@@ -144,10 +138,6 @@ class Option
 
         if (null === $value && \in_array($this->typeName, self::ALLOWED_UNION_TYPES, true)) {
             return true;
-        }
-
-        if (is_subclass_of($this->typeName, \BackedEnum::class) && (\is_string($value) || \is_int($value))) {
-            return ($this->typeName)::tryFrom($value) ?? throw InvalidOptionException::fromEnumValue($this->name, $value, $this->suggestedValues);
         }
 
         if ('array' === $this->typeName && $this->allowNull && [] === $value) {

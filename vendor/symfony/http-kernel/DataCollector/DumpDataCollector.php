@@ -146,7 +146,7 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
     /**
      * @internal
      */
-    public function __serialize(): array
+    public function __sleep(): array
     {
         if (!$this->dataCount) {
             $this->data = [];
@@ -161,15 +161,16 @@ class DumpDataCollector extends DataCollector implements DataDumperInterface
         $this->dataCount = 0;
         $this->isCollected = true;
 
-        return ['data' => $this->data];
+        return parent::__sleep();
     }
 
     /**
      * @internal
      */
-    public function __unserialize(array $data): void
+    public function __wakeup(): void
     {
-        $this->data = array_pop($data) ?? [];
+        parent::__wakeup();
+
         $charset = array_pop($this->data);
         $fileLinkFormat = array_pop($this->data);
         $this->dataCount = \count($this->data);

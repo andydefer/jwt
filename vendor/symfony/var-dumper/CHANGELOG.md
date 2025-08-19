@@ -1,11 +1,6 @@
 CHANGELOG
 =========
 
-7.4
----
-
- * Add support for adding more default casters to `AbstractCloner::addDefaultCasters()`
-
 7.3
 ---
 

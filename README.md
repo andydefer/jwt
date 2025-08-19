@@ -52,13 +52,13 @@ La méthode préférée pour installer ce package est d'utiliser [Composer](http
 
 Le package fonctionne de manière préconfigurée avec les routes d'API suivantes :
 
-  * `POST /api/jwt/register`
-  * `POST /api/jwt/login`
-  * `GET /api/jwt/token`
-  * `POST /api/jwt/logout`
-  * `POST /api/jwt/refresh`
-  * `GET /api/jwt/user`
-  * `POST /api/jwt/verify-signature`
+  * `POST /jwt/register`
+  * `POST /jwt/login`
+  * `GET /jwt/token`
+  * `POST /jwt/logout`
+  * `POST /jwt/refresh`
+  * `GET /jwt/user`
+  * `POST /jwt/verify-signature`
 
 Vous pouvez personnaliser le préfixe de ces routes en modifiant le Service Provider.
 
@@ -72,18 +72,18 @@ Le package gère l'ensemble du flux d'authentification JWT pour votre backend, y
 
 Les utilisateurs peuvent s'authentifier via les endpoints suivants :
 
-  * **`POST /api/jwt/register`** : Enregistre un nouvel utilisateur et émet un token JWT.
+  * **`POST /jwt/register`** : Enregistre un nouvel utilisateur et émet un token JWT.
       * **Paramètres :** `name`, `email`, `password`, `password_confirmation`, `device_id` (optionnel)
-  * **`POST /api/jwt/login`** : Authentifie un utilisateur existant et émet un token JWT.
+  * **`POST /jwt/login`** : Authentifie un utilisateur existant et émet un token JWT.
       * **Paramètres :** `email`, `password`, `device_id` (optionnel)
-  * **`GET /api/jwt/token`** : Génère un token JWT pour un utilisateur déjà authentifié via la session Laravel (utile pour les premières requêtes depuis une application Inertia.js).
+  * **`GET /jwt/token`** : Génère un token JWT pour un utilisateur déjà authentifié via la session Laravel (utile pour les premières requêtes depuis une application Inertia.js).
 
 ### Gestion des tokens
 
-  * **`POST /api/jwt/logout`** : Invalide le token JWT actuel.
-  * **`POST /api/jwt/refresh`** : Invalide le token actuel et en émet un nouveau.
-  * **`GET /api/jwt/user`** : Récupère les informations de l'utilisateur authentifié.
-  * **`POST /api/jwt/verify-signature`** : Vérifie la signature d'une requête client pour des communications ultra-sécurisées.
+  * **`POST /jwt/logout`** : Invalide le token JWT actuel.
+  * **`POST /jwt/refresh`** : Invalide le token actuel et en émet un nouveau.
+  * **`GET /jwt/user`** : Récupère les informations de l'utilisateur authentifié.
+  * **`POST /jwt/verify-signature`** : Vérifie la signature d'une requête client pour des communications ultra-sécurisées.
 
 -----
 
@@ -101,7 +101,7 @@ Assurez-vous que votre application front-end est configurée pour pointer vers l
 import axios from 'axios';
 
 // Remplacez par l'URL de votre application Laravel
-axios.defaults.baseURL = 'https://mon-domaine-laravel.com/api/jwt';
+axios.defaults.baseURL = 'https://mon-domaine-laravel.com/jwt';
 axios.defaults.withCredentials = true;
 ```
 

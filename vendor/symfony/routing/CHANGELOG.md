@@ -1,11 +1,6 @@
 CHANGELOG
 =========
 
-7.4
----
-
- * Allow query-specific parameters in `UrlGenerator` using `_query`
-
 7.3
 ---
 

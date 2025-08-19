@@ -65,11 +65,11 @@ class FileLinkFormatter
     /**
      * @internal
      */
-    public function __serialize(): array
+    public function __sleep(): array
     {
         $this->fileLinkFormat = $this->getFileLinkFormat();
 
-        return ['fileLinkFormat' => $this->fileLinkFormat];
+        return ['fileLinkFormat'];
     }
 
     /**

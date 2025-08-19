@@ -91,7 +91,6 @@ class AddConsoleCommandPass implements CompilerPassInterface
 
             $description = $tags[0]['description'] ?? null;
             $help = $tags[0]['help'] ?? null;
-            $usages = $tags[0]['usages'] ?? null;
 
             unset($tags[0]);
             $lazyCommandMap[$commandName] = $id;
@@ -109,7 +108,6 @@ class AddConsoleCommandPass implements CompilerPassInterface
 
                 $description ??= $tag['description'] ?? null;
                 $help ??= $tag['help'] ?? null;
-                $usages ??= $tag['usages'] ?? null;
             }
 
             $definition->addMethodCall('setName', [$commandName]);
@@ -124,12 +122,6 @@ class AddConsoleCommandPass implements CompilerPassInterface
 
             if ($help && $invokableRef) {
                 $definition->addMethodCall('setHelp', [str_replace('%', '%%', $help)]);
-            }
-
-            if ($usages) {
-                foreach ($usages as $usage) {
-                    $definition->addMethodCall('addUsage', [$usage]);
-                }
             }
 
             if (!$description) {

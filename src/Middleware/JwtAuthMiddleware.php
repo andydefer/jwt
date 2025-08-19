@@ -1,12 +1,12 @@
 <?php
 
-namespace AndyDefer\Jwt\Middleware;
+namespace Andydefer\JwtAuth\Middleware;
 
+use Andydefer\JwtAuth\Models\JwtAuth;
 use Closure;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth as TymonJWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use AndyDefer\Jwt\Models\JwtAuth;
 use Illuminate\Support\Facades\Log;
 
 class JwtAuthMiddleware
@@ -23,15 +23,6 @@ class JwtAuthMiddleware
                 ], 401);
             }
 
-            // Extract the UUID:JWT parts
-            $parts = explode(':', $token, 2);
-            if (count($parts) !== 2) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Invalid token format'
-                ], 401);
-            }
-
             $jwtAuth = JwtAuth::where('jwt_token', $token)->first();
 
             if (!$jwtAuth || !$jwtAuth->is_jwt_auth) {
@@ -41,8 +32,8 @@ class JwtAuthMiddleware
                 ], 401);
             }
 
-            // Verify token signature using JWT-Auth facade alias
-            $user = TymonJWTAuth::setToken($parts[1])->authenticate();
+            // Authenticate user with JWT
+            $user = TymonJWTAuth::setToken($token)->authenticate();
 
             if (!$user) {
                 return response()->json([
@@ -51,27 +42,7 @@ class JwtAuthMiddleware
                 ], 404);
             }
 
-            // Verify client signature if required
-            if ($request->hasHeader('X-Signature') && $request->hasHeader('X-Signed-Data')) {
-                $publicKey = openssl_pkey_get_public($jwtAuth->public_key);
-                $result = openssl_verify(
-                    $request->header('X-Signed-Data'),
-                    base64_decode($request->header('X-Signature')),
-                    $publicKey,
-                    'sha512WithRSAEncryption'
-                );
-
-                openssl_free_key($publicKey);
-
-                if ($result !== 1) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Invalid request signature'
-                    ], 401);
-                }
-            }
-
-            // Update last used at
+            // Update last used timestamp
             $jwtAuth->update(['last_used_at' => now()]);
 
             // Attach user and jwtAuth to request

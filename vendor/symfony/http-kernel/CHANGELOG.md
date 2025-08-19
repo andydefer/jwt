@@ -1,23 +1,14 @@
 CHANGELOG
 =========
 
-7.4
----
-
- * Add support for the `QUERY` HTTP method
- * Deprecate implementing `__sleep/wakeup()` on kernels; use `__(un)serialize()` instead
- * Deprecate implementing `__sleep/wakeup()` on data collectors; use `__(un)serialize()` instead
- * Make `Profile` final and `Profiler::__sleep()` internal
-
 7.3
 ---
 
- * Record a `waiting` trace in the `HttpCache` when the cache had to wait for another request to finish
  * Add `$key` argument to `#[MapQueryString]` that allows using a specific key for argument resolving
  * Support `Uid` in `#[MapQueryParameter]`
  * Add `ServicesResetterInterface`, implemented by `ServicesResetter`
  * Allow configuring the logging channel per type of exceptions in ErrorListener
-
+ 
 7.2
 ---
 

@@ -15,6 +15,7 @@
             ]
         }
     },
+    "license": "MIT",
     "minimum-stability": "stable",
     "name": "andydefer/jwt-auth",
     "prefer-stable": true,

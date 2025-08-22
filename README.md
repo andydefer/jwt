@@ -9,6 +9,7 @@
 6. [Endpoints API](#-endpoints-api)
 7. [Sécurité](#-sécurité)
 8. [Dépannage](#-dépannage)
+9. [Gestion des Erreurs de Cache](#-gestion-des-erreurs-de-cache)
 
 ## 🌟 Introduction
 
@@ -299,6 +300,61 @@ Authorization: Bearer votre_token_ici
 php artisan config:clear
 ```
 
+## 🚨 Gestion des Erreurs de Cache
+
+### En cas d'erreur de cache lors de l'installation/désinstallation
+
+Si vous rencontrez des erreurs liées au cache Laravel :
+
+```bash
+# Erreur typique lors de la désinstallation
+Class "Andydefer\JwtAuth\JwtAuthServiceProvider" not found
+```
+
+### Solutions immédiates :
+
+**Nettoyage complet du cache :**
+```bash
+# Supprimer tous les fichiers de cache Laravel
+rm -f bootstrap/cache/*.php
+
+# Vider tous les caches
+php artisan optimize:clear
+
+# Régénérer l'autoload Composer
+composer dump-autoload
+```
+
+**Pour la désinstallation :**
+```bash
+# 1. Nettoyer le cache avant désinstallation
+rm -f bootstrap/cache/*.php
+
+# 2. Supprimer manuellement le provider si nécessaire
+sed -i '/Andydefer\\JwtAuth\\JwtAuthServiceProvider/d' config/app.php
+
+# 3. Désinstaller le package
+composer remove andydefer/jwt-auth
+```
+
+**Pour les utilisateurs Windows :**
+```cmd
+:: Supprimer les fichiers de cache
+del /Q bootstrap\cache\*.php
+
+:: Vider les caches
+php artisan optimize:clear
+
+:: Régénérer l'autoload
+composer dump-autoload
+```
+
+### Prévention des erreurs de cache :
+
+1. **Toujours vider le cache** après l'installation ou la désinstallation
+2. **Vérifier les permissions** des dossiers de cache
+3. **S'assurer que les migrations** sont exécutées correctement
+
 ## 📋 Exemple Complet
 
 ### Controller Protégé
@@ -348,10 +404,6 @@ Route::prefix('api')->group(function () {
     });
 });
 ```
-
-## 📞 Support
-
-Pour toute question ou problème, consultez la documentation officielle de [tymon/jwt-auth](https://github.com/tymondesigns/jwt-auth) ou créez une issue sur le repository du package.
 
 ## 📄 Licence
 
